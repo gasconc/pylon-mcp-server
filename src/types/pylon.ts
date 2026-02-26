@@ -42,7 +42,7 @@ export interface CreateAccountPayload {
   primary_domain?: string;
   type?: string;
   tags?: string[];
-  custom_fields?: Record<string, unknown>;
+  custom_fields?: CustomFieldInput[];
   external_ids?: ExternalId[];
 }
 
@@ -52,7 +52,7 @@ export interface UpdateAccountPayload {
   primary_domain?: string;
   type?: string;
   tags?: string[];
-  custom_fields?: Record<string, unknown>;
+  custom_fields?: CustomFieldInput[];
   is_disabled?: boolean;
 }
 
@@ -78,7 +78,7 @@ export interface CreateIssuePayload {
   state?: string;
   priority?: string;
   tags?: string[];
-  custom_fields?: Record<string, unknown>;
+  custom_fields?: CustomFieldInput[];
   title?: string;
 }
 
@@ -87,7 +87,7 @@ export interface UpdateIssuePayload {
   state?: string;
   priority?: string;
   tags?: string[];
-  custom_fields?: Record<string, unknown>;
+  custom_fields?: CustomFieldInput[];
   title?: string;
 }
 
@@ -127,6 +127,17 @@ export type ExternalIssueSource = 'linear' | 'asana' | 'jira' | 'github';
 export type ExternalIssueOperation = 'link' | 'remove';
 
 // ─── Custom Fields ───────────────────────────────────────────────────────────
+
+/**
+ * Input format for setting a custom field value via the Pylon API.
+ * Use `value` for single-valued fields and `values` for multi-valued fields (e.g. multiselect).
+ * Passing neither `value` nor `values` unsets the field.
+ */
+export interface CustomFieldInput {
+  slug: string;
+  value?: string;
+  values?: string[];
+}
 
 export type CustomFieldObjectType = 'account' | 'issue' | 'contact';
 
