@@ -14,7 +14,10 @@ const CreateAccountSchema = z.object({
     primary_domain: z.string().optional().describe('Primary domain for the account'),
     type: z.string().optional().describe('Type of the account'),
     tags: z.array(z.string()).optional().describe('Tags to associate with the account'),
-    custom_fields: z.record(z.any()).optional().describe('Custom fields for the account'),
+    custom_fields: z
+        .array(z.object({ slug: z.string(), value: z.string().optional(), values: z.array(z.string()).optional() }))
+        .optional()
+        .describe('Custom fields for the account'),
     external_ids: z
         .array(z.object({ external_id: z.string(), label: z.string() }))
         .optional()
@@ -27,7 +30,10 @@ const UpdateAccountSchema = z.object({
     primary_domain: z.string().optional().describe('Primary domain'),
     type: z.string().optional().describe('Type of the account'),
     tags: z.array(z.string()).optional().describe('Tags for the account'),
-    custom_fields: z.record(z.any()).optional().describe('Custom fields'),
+    custom_fields: z
+        .array(z.object({ slug: z.string(), value: z.string().optional(), values: z.array(z.string()).optional() }))
+        .optional()
+        .describe('Custom fields'),
     is_disabled: z.boolean().optional().describe('Whether the account is disabled'),
 });
 // ─── Tool Definitions ────────────────────────────────────────────────────────
@@ -66,7 +72,19 @@ const tools = [
                 primary_domain: { type: 'string', description: 'Primary domain for the account' },
                 type: { type: 'string', description: 'Type of the account' },
                 tags: { type: 'array', items: { type: 'string' }, description: 'Tags to associate with the account' },
-                custom_fields: { type: 'object', description: 'Custom fields for the account' },
+                custom_fields: {
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        properties: {
+                            slug: { type: 'string', description: 'The slug of the custom field' },
+                            value: { type: 'string', description: 'Value for single-valued fields' },
+                            values: { type: 'array', items: { type: 'string' }, description: 'Values for multi-valued fields (e.g. multiselect)' },
+                        },
+                        required: ['slug'],
+                    },
+                    description: 'Custom fields for the account',
+                },
                 external_ids: {
                     type: 'array',
                     items: { type: 'object', properties: { external_id: { type: 'string' }, label: { type: 'string' } } },
@@ -88,7 +106,19 @@ const tools = [
                 primary_domain: { type: 'string', description: 'Primary domain' },
                 type: { type: 'string', description: 'Type of the account' },
                 tags: { type: 'array', items: { type: 'string' }, description: 'Tags for the account' },
-                custom_fields: { type: 'object', description: 'Custom fields' },
+                custom_fields: {
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        properties: {
+                            slug: { type: 'string', description: 'The slug of the custom field' },
+                            value: { type: 'string', description: 'Value for single-valued fields' },
+                            values: { type: 'array', items: { type: 'string' }, description: 'Values for multi-valued fields (e.g. multiselect)' },
+                        },
+                        required: ['slug'],
+                    },
+                    description: 'Custom fields',
+                },
                 is_disabled: { type: 'boolean', description: 'Whether the account is disabled' },
             },
             required: ['account_id'],

@@ -33,7 +33,7 @@ export interface CreateAccountPayload {
     primary_domain?: string;
     type?: string;
     tags?: string[];
-    custom_fields?: Record<string, unknown>;
+    custom_fields?: CustomFieldInput[];
     external_ids?: ExternalId[];
 }
 export interface UpdateAccountPayload {
@@ -42,7 +42,7 @@ export interface UpdateAccountPayload {
     primary_domain?: string;
     type?: string;
     tags?: string[];
-    custom_fields?: Record<string, unknown>;
+    custom_fields?: CustomFieldInput[];
     is_disabled?: boolean;
 }
 export interface Issue {
@@ -64,7 +64,7 @@ export interface CreateIssuePayload {
     state?: string;
     priority?: string;
     tags?: string[];
-    custom_fields?: Record<string, unknown>;
+    custom_fields?: CustomFieldInput[];
     title?: string;
 }
 export interface UpdateIssuePayload {
@@ -72,7 +72,7 @@ export interface UpdateIssuePayload {
     state?: string;
     priority?: string;
     tags?: string[];
-    custom_fields?: Record<string, unknown>;
+    custom_fields?: CustomFieldInput[];
     title?: string;
 }
 export type FilterOperator = 'equals' | 'not_equals' | 'contains' | 'not_contains' | 'in' | 'not_in' | 'and' | 'or' | 'time_is_after' | 'time_is_before' | 'time_range';
@@ -91,6 +91,16 @@ export interface Message {
 }
 export type ExternalIssueSource = 'linear' | 'asana' | 'jira' | 'github';
 export type ExternalIssueOperation = 'link' | 'remove';
+/**
+ * Input format for setting a custom field value via the Pylon API.
+ * Use `value` for single-valued fields and `values` for multi-valued fields (e.g. multiselect).
+ * Passing neither `value` nor `values` unsets the field.
+ */
+export interface CustomFieldInput {
+    slug: string;
+    value?: string;
+    values?: string[];
+}
 export type CustomFieldObjectType = 'account' | 'issue' | 'contact';
 export type CustomFieldType = 'text' | 'number' | 'decimal' | 'boolean' | 'date' | 'datetime' | 'user' | 'url' | 'select' | 'multiselect';
 export interface SelectOption {
