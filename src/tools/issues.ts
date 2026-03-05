@@ -22,7 +22,10 @@ const CreateIssueSchema = z.object({
   state: z.string().optional().describe('State of the issue'),
   priority: z.string().optional().describe('Priority of the issue'),
   tags: z.array(z.string()).optional().describe('Tags for the issue'),
-  custom_fields: z.record(z.any()).optional().describe('Custom fields for the issue'),
+  custom_fields: z
+    .array(z.object({ slug: z.string(), value: z.string().optional(), values: z.array(z.string()).optional() }))
+    .optional()
+    .describe('Custom fields for the issue'),
   title: z.string().optional().describe('Title of the issue'),
 });
 
@@ -32,7 +35,10 @@ const UpdateIssueSchema = z.object({
   state: z.string().optional().describe('State of the issue'),
   priority: z.string().optional().describe('Priority of the issue'),
   tags: z.array(z.string()).optional().describe('Tags for the issue'),
-  custom_fields: z.record(z.any()).optional().describe('Custom fields'),
+  custom_fields: z
+    .array(z.object({ slug: z.string(), value: z.string().optional(), values: z.array(z.string()).optional() }))
+    .optional()
+    .describe('Custom fields'),
   title: z.string().optional().describe('Title of the issue'),
 });
 
@@ -97,7 +103,19 @@ const tools: ToolDefinition[] = [
         state: { type: 'string', description: 'State of the issue' },
         priority: { type: 'string', description: 'Priority of the issue' },
         tags: { type: 'array', items: { type: 'string' }, description: 'Tags for the issue' },
-        custom_fields: { type: 'object', description: 'Custom fields for the issue' },
+        custom_fields: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              slug: { type: 'string', description: 'The slug of the custom field' },
+              value: { type: 'string', description: 'Value for single-valued fields' },
+              values: { type: 'array', items: { type: 'string' }, description: 'Values for multi-valued fields (e.g. multiselect)' },
+            },
+            required: ['slug'],
+          },
+          description: 'Custom fields for the issue',
+        },
         title: { type: 'string', description: 'Title of the issue' },
       },
       required: ['body_html'],
@@ -114,7 +132,19 @@ const tools: ToolDefinition[] = [
         state: { type: 'string', description: 'State of the issue' },
         priority: { type: 'string', description: 'Priority of the issue' },
         tags: { type: 'array', items: { type: 'string' }, description: 'Tags for the issue' },
-        custom_fields: { type: 'object', description: 'Custom fields' },
+        custom_fields: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              slug: { type: 'string', description: 'The slug of the custom field' },
+              value: { type: 'string', description: 'Value for single-valued fields' },
+              values: { type: 'array', items: { type: 'string' }, description: 'Values for multi-valued fields (e.g. multiselect)' },
+            },
+            required: ['slug'],
+          },
+          description: 'Custom fields',
+        },
         title: { type: 'string', description: 'Title of the issue' },
       },
       required: ['issue_id'],

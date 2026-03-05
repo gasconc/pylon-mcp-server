@@ -42,7 +42,7 @@ export interface CreateAccountPayload {
   primary_domain?: string;
   type?: string;
   tags?: string[];
-  custom_fields?: Record<string, unknown>;
+  custom_fields?: CustomFieldInput[];
   external_ids?: ExternalId[];
 }
 
@@ -52,7 +52,7 @@ export interface UpdateAccountPayload {
   primary_domain?: string;
   type?: string;
   tags?: string[];
-  custom_fields?: Record<string, unknown>;
+  custom_fields?: CustomFieldInput[];
   is_disabled?: boolean;
 }
 
@@ -78,7 +78,7 @@ export interface CreateIssuePayload {
   state?: string;
   priority?: string;
   tags?: string[];
-  custom_fields?: Record<string, unknown>;
+  custom_fields?: CustomFieldInput[];
   title?: string;
 }
 
@@ -87,7 +87,7 @@ export interface UpdateIssuePayload {
   state?: string;
   priority?: string;
   tags?: string[];
-  custom_fields?: Record<string, unknown>;
+  custom_fields?: CustomFieldInput[];
   title?: string;
 }
 
@@ -96,13 +96,18 @@ export type FilterOperator =
   | 'not_equals'
   | 'contains'
   | 'not_contains'
+  | 'does_not_contain'
   | 'in'
   | 'not_in'
   | 'and'
   | 'or'
   | 'time_is_after'
   | 'time_is_before'
-  | 'time_range';
+  | 'time_range'
+  | 'string_contains'
+  | 'string_does_not_contain'
+  | 'is_set'
+  | 'is_unset';
 
 export interface IssueFilter {
   field?: string;
@@ -127,6 +132,17 @@ export type ExternalIssueSource = 'linear' | 'asana' | 'jira' | 'github';
 export type ExternalIssueOperation = 'link' | 'remove';
 
 // ─── Custom Fields ───────────────────────────────────────────────────────────
+
+/**
+ * Input format for setting a custom field value via the Pylon API.
+ * Use `value` for single-valued fields and `values` for multi-valued fields (e.g. multiselect).
+ * Passing neither `value` nor `values` unsets the field.
+ */
+export interface CustomFieldInput {
+  slug: string;
+  value?: string;
+  values?: string[];
+}
 
 export type CustomFieldObjectType = 'account' | 'issue' | 'contact';
 
@@ -315,6 +331,98 @@ export interface CreateMilestonePayload {
 export interface UpdateMilestonePayload {
   name?: string;
   due_date?: string;
+}
+
+// ─── Knowledge Base ──────────────────────────────────────────────────────────
+
+export interface KnowledgeBase {
+  id: string;
+  title: string;
+  slug: string;
+  default_language: string;
+  supported_languages: string[];
+}
+
+export type ArticleVisibility = 'public' | 'customer' | 'internal_only';
+export type AIAgentAccess = 'inherit' | 'none' | 'specific_agents';
+
+export interface VisibilityConfig {
+  visibility?: ArticleVisibility;
+  ai_agent_access?: AIAgentAccess;
+  allowed_agent_ids?: string[];
+  customer_visibility_condition?: IssueFilter;
+}
+
+export interface Article {
+  id: string;
+  title: string;
+  slug: string;
+  identifier: string;
+  collection_id?: string;
+  is_published: boolean;
+  url: string;
+  current_draft_content_html?: string;
+  current_published_content_html?: string;
+  last_published_at?: string;
+  visibility_config?: VisibilityConfig;
+}
+
+export interface ArticleTranslationInput {
+  body_html: string;
+  language: string;
+  title: string;
+}
+
+export interface CreateArticlePayload {
+  author_user_id: string;
+  body_html: string;
+  title: string;
+  collection_id?: string;
+  is_published?: boolean;
+  is_unlisted?: boolean;
+  slug?: string;
+  translations?: ArticleTranslationInput[];
+  visibility_config?: VisibilityConfig;
+}
+
+export interface UpdateArticlePayload {
+  body_html?: string;
+  title?: string;
+  language?: string;
+  publish_updated_body_html?: boolean;
+  visibility_config?: VisibilityConfig;
+}
+
+export interface KBCollection {
+  id: string;
+  slug: string;
+  description?: string;
+  icon?: string;
+  parent_collection_id?: string;
+  created_at?: string;
+}
+
+export interface CreateCollectionPayload {
+  title: string;
+  description?: string;
+  parent_collection_id?: string;
+  slug?: string;
+}
+
+export interface RouteRedirect {
+  id: string;
+  from_path: string;
+  object_id: string;
+  object_type: string;
+  language?: string;
+  created_at?: string;
+}
+
+export interface CreateRouteRedirectPayload {
+  from_path: string;
+  object_id: string;
+  object_type: string;
+  language?: string;
 }
 
 // ─── Tool Registration ───────────────────────────────────────────────────────
