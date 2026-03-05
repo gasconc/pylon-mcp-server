@@ -17,6 +17,7 @@ import customFieldsModule from './tools/custom-fields.js';
 import tasksModule from './tools/tasks.js';
 import projectsModule from './tools/projects.js';
 import milestonesModule from './tools/milestones.js';
+import knowledgeBasesModule from './tools/knowledge-bases.js';
 
 const modules: ToolModule[] = [
   accountsModule,
@@ -27,6 +28,7 @@ const modules: ToolModule[] = [
   tasksModule,
   projectsModule,
   milestonesModule,
+  knowledgeBasesModule,
 ];
 
 const allTools: ToolDefinition[] = modules.flatMap((m) => m.tools);
@@ -43,7 +45,7 @@ async function main() {
   validateConfig();
 
   const server = new Server(
-    { name: 'pylon-mcp-server', version: '2.0.0' },
+    { name: 'pylon-mcp-server', version: '2.1.0' },
     { capabilities: { tools: {} } },
   );
 

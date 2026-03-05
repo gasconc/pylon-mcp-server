@@ -11,6 +11,7 @@ import customFieldsModule from './tools/custom-fields.js';
 import tasksModule from './tools/tasks.js';
 import projectsModule from './tools/projects.js';
 import milestonesModule from './tools/milestones.js';
+import knowledgeBasesModule from './tools/knowledge-bases.js';
 const modules = [
     accountsModule,
     issuesModule,
@@ -20,6 +21,7 @@ const modules = [
     tasksModule,
     projectsModule,
     milestonesModule,
+    knowledgeBasesModule,
 ];
 const allTools = modules.flatMap((m) => m.tools);
 async function handleToolCall(name, args) {
@@ -32,7 +34,7 @@ async function handleToolCall(name, args) {
 }
 async function main() {
     validateConfig();
-    const server = new Server({ name: 'pylon-mcp-server', version: '2.0.0' }, { capabilities: { tools: {} } });
+    const server = new Server({ name: 'pylon-mcp-server', version: '2.1.0' }, { capabilities: { tools: {} } });
     server.setRequestHandler(ListToolsRequestSchema, async () => ({
         tools: allTools,
     }));
